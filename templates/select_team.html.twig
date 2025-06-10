@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="text-center">
+        <div class="container px-5 my-5">
+            <h1 class="mb-5 fw-bold">De quelle équipe faites-vous parti ?</h1>
+            <div class="bd-callout bd-callout-default">
+                <h5>Choisissez votre équipe dans la liste ci dessous.</h5>
+                Si votre calendrier contient des matchs sans dates, ils seront affichés par défaut au 01/09 à 20:00.
+            </div>
+
+            <form method="post" action="{{ path('downloadGcal') }}">
+                <div class="form-floating mb-3">
+                    <select name="team" class="form-select" id="team" aria-label="team">
+                        {% for team in teams %}
+                            <option value="{{ team }}">{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="float-end">
+                    <button class="btn btn-primary " id="submitButton" type="submit"><i class="bi bi-download"></i>
+                        Télécharger le calendrier
+                    </button>
+                    <div class="input-group">
+                        <span class="input-group-text" onclick="copyToClipBoard()" onmouseout="outFunc()" data-bs-toggle="tooltip" data-bs-placement="top" title="Copier dans le presse-papier">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"></path>
+                                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"></path>
+                            </svg>
+                        </span>
+                        <input type="text" id="quicklink" class="form-control" value="{{ url('quickDownload', {saison: saison, codent: codent, poule: poule}) }}">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <br/>
+        <hr>
+
+        <div class="px-4 pt-5 my-5 text-center">
+            <p class="lead mb-4">Retrouvez les procédures d'imports officiels</p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+                <a href="https://support.microsoft.com/fr-fr/office/importer-des-calendriers-dans-outlook-8e8364e1-400e-4c0f-a573-fe76b5a2d379"
+                   class="px-4 me-sm-3">
+                    <img class="img-fluid" src="https://outlook.live.com/mail/favicon.ico"> Outlook
+                </a>
+                <a href="https://support.google.com/calendar/answer/37118?hl=fr&ref_topic=10510645" class="px-4">
+                <img class="img-fluid" src="https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_30.ico"> Google
+                </a>
+            </div>
+
+            <h1 class="display-5">Comment importer mon agenda sur Google ?</h1>
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4">Ouvrez <a href="http://calendar.google.com/">Google Agenda</a> et cliquer sur la
+                    roue dentée puis sur "Paramètres"</p>
+            </div>
+            <div class="container px-5 my-5">
+                <img src="../assets/images/step1.png" class="img-fluid align-middle mr-1">
+            </div>
+
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4">Cliquez sur "Importer et exporter" dans le menu vertical à gauche</p>
+            </div>
+            <div class="container px-5 my-5">
+                <img src="../assets/images/step2.png" class="img-fluid align-middle mr-1">
+            </div>
+
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4">Cliquez sur "Sélectionner un fichier sur votre ordinateur" et sélectionner le
+                    fichier que vous venez de télécharger.</p>
+            </div>
+            <div class="container px-5 my-5">
+                <img src="../assets/images/step3.png" class="img-fluid align-middle mr-1">
+            </div>
+
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4">Enfin, cliquez sur "Importer".</p>
+            </div>
+            <div class="container px-5 my-5">
+                <img src="../assets/images/step4.png" class="img-fluid align-middle mr-1">
+            </div>
+
+
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4">Si l'import s'est bien passé, vous devriez voir votre nombre de match importés
+                    !</p>
+            </div>
+            <div class="container px-5">
+                <img src="../assets/images/step5.png" class="img-fluid align-middle mr-1">
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function copyToClipBoard() {
+            var copyText = document.getElementById("quicklink");
+
+            var sel = document.getElementById("team");
+            var selectedTeam = sel.options[sel.selectedIndex].text;
+
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            var fullUrl = copyText.value+'&team='+encodeURIComponent(selectedTeam);
+
+            navigator.clipboard.writeText(fullUrl);
+            copyText.value(fullUrl);
+        }
+    </script>
+{% endblock body %}
